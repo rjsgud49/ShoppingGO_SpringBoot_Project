@@ -1,25 +1,21 @@
-import type{ Product } from "../types/product";
 import { Link } from "react-router-dom";
 
-interface Props {
-    product: Product;
-}
-
-const ProductCard = ({ product }: Props) => {
+const ProductCard = ({ product }: any) => {
     return (
         <div className="border rounded-lg p-4 shadow hover:shadow-lg transition">
             <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-48 object-cover rounded-md"
+                src={product.imageUrl}
+                className="w-full h-40 object-cover rounded"
             />
-            <h3 className="mt-3 font-semibold text-lg">{product.name}</h3>
-            <p className="text-gray-500">{product.price.toLocaleString()}원</p>
+
+            <h3 className="text-lg font-bold mt-2">{product.name}</h3>
+            <p className="text-gray-600">{product.price.toLocaleString()}원</p>
+
             <Link
-                to={`/product/${product.id}`}
-                className="mt-2 inline-block w-full bg-blue-600 text-white text-center py-2 rounded-md hover:bg-blue-700"
+                to={`/products/${product.id}`}
+                className="block text-center bg-blue-600 text-white py-2 rounded mt-3"
             >
-                상세보기
+                상세 보기
             </Link>
         </div>
     );
