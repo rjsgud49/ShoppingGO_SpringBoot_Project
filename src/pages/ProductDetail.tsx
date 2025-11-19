@@ -1,23 +1,44 @@
-import { useParams } from "react-router-dom";
-import { products } from "../data/products";
+    import { useEffect, useState } from "react";
+    import { useParams } from "react-router-dom";
+    import { getProductById } from "../api/products";
+    import { addToCart } from "../api/cart";
 
-const ProductDetail = () => {
-    const { id } = useParams();
-    const product = products.find((p) => p.id === Number(id));
+    const ProductDetail = () => {
+        const { id } = useParams();
+        const [product, setProduct] = useState<any>(null);
 
-    if (!product) return <div className="p-8 text-center text-gray-500">상품을 찾을 수 없습니다.</div>;
+        useEffect(() => {
+            getProductById(Number(id)).then((res) => setProduct(res.data));
+        }, []);
 
-    return (
-        <div className="p-8 max-w-3xl mx-auto">
-            <img src={product.image} alt={product.name} className="w-full h-64 object-cover rounded-lg" />
-            <h1 className="text-3xl font-bold mt-4">{product.name}</h1>
-            <p className="text-gray-600 mt-2">{product.description}</p>
-            <p className="text-2xl font-semibold mt-4">{product.price.toLocaleString()}원</p>
-            <button className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-                장바구니에 담기
-            </button>
-        </div>
-    );
-};
+        const handleAdd = async () => {
+            await addToCart({
+                userId: 11,
+                productId: product.id,
+                quantity: 1,
+            });
+            alert("장바구니 추가 완료");
+        };
 
-export default ProductDetail;
+        if (!product) return <p>로딩중...</p>;
+
+        return (
+            <div className="p-6 max-w-2xl mx-auto">
+                <img src={product.imageUrl} className="w-full rounded" />
+
+                <h1 className="text-2xl font-bold mt-4">{product.name}</h1>
+                <p className="text-xl mt-2">
+                    {product.price.toLocaleString()}원
+                </p>
+
+                <button
+                    onClick={handleAdd}
+                    className="bg-blue-600 text-white w-full py-3 mt-6 rounded"
+                >
+                    장바구니 담기
+                </button>
+            </div>
+        );
+    };
+
+    export default ProductDetail;
